@@ -14,8 +14,9 @@ bot.
 """
 
 import logging
+import os
 
-from environs import Env
+from dotenv import load_dotenv
 
 from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
@@ -46,16 +47,44 @@ def help_command(update: Update, context: CallbackContext) -> None:
 
 def echo(update: Update, context: CallbackContext) -> None:
     """Echo the user message."""
-    update.message.reply_text(update.message.text)
+    project_id = os.getenv('GOOGLE_PROJECT_ID')
+    session_id = update.effective_user
+    texts = update.message.text
+    language_code = os.getenv('LANGUAGE_CODE')
+    update.message.reply_text(detect_intent_texts(project_id, session_id, texts, language_code))
 
+
+def detect_intent_texts(project_id, session_id, texts, language_code):
+    """Returns the result of detect intent with texts as inputs.
+
+    Using the same `session_id` between requests allows continuation
+    of the conversation."""
+    from google.cloud import dialogflow
+
+    session_client = dialogflow.SessionsClient()
+
+    session = session_client.session_path(project_id, session_id)
+    print("Session path: {}\n".format(session))
+    
+    #for text in texts:
+    text_input = dialogflow.TextInput(text=texts, language_code=language_code)
+
+    query_input = dialogflow.QueryInput(text=text_input)
+
+    response = session_client.detect_intent(
+        request={"session": session, "query_input": query_input}
+    )
+
+    return response.query_result.fulfillment_text
+    
 
 def main() -> None:
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
-    env = Env()
-    env.read_env()
-    tg_bot_token = env('TELEGRAM_BOT_TOKEN')
+    load_dotenv()
+    tg_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
     updater = Updater(tg_bot_token)
+    
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
