@@ -122,9 +122,6 @@ def main() -> None:
         # start_polling() is non-blocking and will stop the bot gracefully.
         updater.idle()
 
-    except ReadTimeout as err:
-        logger.error('Бот упал с ошибкой:')
-        logger.error(err)
     except ConnectionError as err:
         logger.error('Бот упал с ошибкой:')
         logger.error(err)

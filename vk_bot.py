@@ -58,12 +58,6 @@ if __name__ == '__main__':
             if event.type == VkEventType.MESSAGE_NEW and event.to_me:
                 echo(event, vk_api)
 
-    except ZeroDivisionError as err:
-        logger.error('Бот упал с ошибкой:')
-        logger.error(err)
-    except ReadTimeout as err:
-        logger.error('Бот упал с ошибкой:')
-        logger.error(err)
     except ConnectionError as err:
         logger.error('Бот упал с ошибкой:')
         logger.error(err)
