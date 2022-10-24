@@ -51,7 +51,8 @@ def echo(update: Update, context: CallbackContext) -> None:
     session_id = update.effective_user
     texts = update.message.text
     language_code = os.getenv('LANGUAGE_CODE')
-    update.message.reply_text(detect_intent_texts(project_id, session_id, texts, language_code))
+    response = detect_intent_texts(project_id, session_id, texts, language_code)
+    update.message.reply_text(response.query_result.fulfillment_text)
 
 
 def detect_intent_texts(project_id, session_id, texts, language_code):
@@ -75,7 +76,7 @@ def detect_intent_texts(project_id, session_id, texts, language_code):
         request={"session": session, "query_input": query_input}
     )
 
-    return response.query_result.fulfillment_text
+    return response
     
 
 def main() -> None:
