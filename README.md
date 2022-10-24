@@ -2,6 +2,10 @@
 
 Обучаемые боты, которые умеют общаться с пользователями, используя возможности нейросети DialogFlow.
 
+![](https://raw.githubusercontent.com/danceandfight/gameofverbsbot/main/tg.gif)
+
+Поболтать с ботом можно в [чате в VK](https://vk.com/club216618579) или в [телеграме](https://t.me/dvmnxxhelpergov_bot)
+
 ## Как установить
 
 **Важно!** Предварительно должен быть установлен python версии не выше 3.9.x.
