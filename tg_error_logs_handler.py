@@ -1,3 +1,5 @@
+import logging
+
 class ErrorLogsHandler(logging.Handler):
 
     def __init__(self, tg_bot, chat_id):
