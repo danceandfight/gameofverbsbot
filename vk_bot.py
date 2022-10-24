@@ -7,6 +7,7 @@ from telegram import Bot
 from dotenv import load_dotenv
 
 from detect_intent import detect_intent_texts
+from tg_error_logs_handler import ErrorLogsHandler
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
@@ -14,16 +15,6 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-class ErrorLogsHandler(logging.Handler):
-
-    def __init__(self, tg_bot, chat_id):
-        super().__init__()
-        self.chat_id = chat_id
-        self.tg_bot = tg_bot
-
-    def emit(self, record):
-        log_entry = self.format(record)
-        self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
 
 def get_dialogflow_response(event, vk_api):
     project_id = os.getenv('GOOGLE_PROJECT_ID')
