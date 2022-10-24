@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 from telegram import Update, ForceReply, Bot
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
+from detect_intent import detect_intent_texts
+
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )

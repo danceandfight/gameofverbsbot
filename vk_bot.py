@@ -6,7 +6,7 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 from telegram import Bot
 from dotenv import load_dotenv
 
-from tg_bot import detect_intent_texts
+from detect_intent import detect_intent_texts
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
