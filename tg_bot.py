@@ -18,7 +18,7 @@ import os
 
 from dotenv import load_dotenv
 
-from telegram import Update, ForceReply
+from telegram import Update, ForceReply, Bot
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 # Enable logging
@@ -27,6 +27,17 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
+
+class ErrorLogsHandler(logging.Handler):
+
+    def __init__(self, tg_bot, chat_id):
+        super().__init__()
+        self.chat_id = chat_id
+        self.tg_bot = tg_bot
+
+    def emit(self, record):
+        log_entry = self.format(record)
+        self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
 
 
 # Define a few command handlers. These usually take the two arguments update and
@@ -82,28 +93,42 @@ def detect_intent_texts(project_id, session_id, texts, language_code):
 def main() -> None:
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
-    load_dotenv()
-    tg_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
-    updater = Updater(tg_bot_token)
-    
+    try:
+        load_dotenv()
+        tg_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
+        telegram_bot_logger_token = os.getenv('TELEGRAM_BOT_LOGGER_TOKEN')
+        telegram_chat_id = os.getenv('TELEGRAM_CHAT_ID')
+        bot_logger = Bot(token=telegram_bot_logger_token)
+        
+        logger.setLevel(logging.WARNING)
+        logger.addHandler(ErrorLogsHandler(bot_logger, telegram_chat_id))
 
-    # Get the dispatcher to register handlers
-    dispatcher = updater.dispatcher
+        updater = Updater(tg_bot_token)
 
-    # on different commands - answer in Telegram
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("help", help_command))
+        # Get the dispatcher to register handlers
+        dispatcher = updater.dispatcher
 
-    # on non command i.e message - echo the message on Telegram
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+        # on different commands - answer in Telegram
+        dispatcher.add_handler(CommandHandler("start", start))
+        dispatcher.add_handler(CommandHandler("help", help_command))
 
-    # Start the Bot
-    updater.start_polling()
+        # on non command i.e message - echo the message on Telegram
+        dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+        # Start the Bot
+        updater.start_polling()
 
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
-    updater.idle()
+        # Run the bot until you press Ctrl-C or the process receives SIGINT,
+        # SIGTERM or SIGABRT. This should be used most of the time, since
+        # start_polling() is non-blocking and will stop the bot gracefully.
+        updater.idle()
+
+    except ReadTimeout as err:
+        logger.error('Бот упал с ошибкой:')
+        logger.error(err)
+    except ConnectionError as err:
+        logger.error('Бот упал с ошибкой:')
+        logger.error(err)
+        sleep(30)
 
 
 if __name__ == '__main__':
