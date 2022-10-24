@@ -37,7 +37,7 @@ def help_command(update: Update, context: CallbackContext) -> None:
     update.message.reply_text('Help!')
 
 
-def echo(update: Update, context: CallbackContext) -> None:
+def get_dialogflow_response(update: Update, context: CallbackContext) -> None:
     project_id = os.getenv('GOOGLE_PROJECT_ID')
     session_id = update.effective_user
     texts = update.message.text
@@ -83,7 +83,7 @@ def main() -> None:
         dispatcher.add_handler(CommandHandler("start", start))
         dispatcher.add_handler(CommandHandler("help", help_command))
 
-        dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+        dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, get_dialogflow_response))
         updater.start_polling()
 
         updater.idle()

@@ -25,7 +25,7 @@ class ErrorLogsHandler(logging.Handler):
         log_entry = self.format(record)
         self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
 
-def echo(event, vk_api):
+def get_dialogflow_response(event, vk_api):
     project_id = os.getenv('GOOGLE_PROJECT_ID')
     session_id = event.user_id
     texts = event.text
@@ -56,7 +56,7 @@ if __name__ == '__main__':
 
         for event in longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW and event.to_me:
-                echo(event, vk_api)
+                get_dialogflow_response(event, vk_api)
 
     except ConnectionError as err:
         logger.error('Бот упал с ошибкой:')
