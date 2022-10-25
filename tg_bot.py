@@ -21,10 +21,6 @@ def start(update: Update, context: CallbackContext) -> None:
     )
 
 
-def help_command(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text('Help!')
-
-
 def get_dialogflow_response(update: Update, context: CallbackContext) -> None:
     project_id = os.getenv('GOOGLE_PROJECT_ID')
     session_id = update.effective_user
