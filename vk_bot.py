@@ -9,9 +9,6 @@ from dotenv import load_dotenv
 from detect_intent import detect_intent_texts
 from tg_error_logs_handler import ErrorLogsHandler
 
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
-)
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +28,10 @@ def get_dialogflow_response(event, vk_api):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
+    )
+
     try:
         load_dotenv()
 

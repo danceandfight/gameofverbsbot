@@ -9,9 +9,6 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 from detect_intent import detect_intent_texts
 from tg_error_logs_handler import ErrorLogsHandler
 
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
-)
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +54,9 @@ def detect_intent_texts(project_id, session_id, texts, language_code):
     
 
 def main() -> None:
+    logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
+    )
     try:
         load_dotenv()
         tg_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
