@@ -30,25 +30,6 @@ def get_dialogflow_response(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(response.query_result.fulfillment_text)
 
 
-def detect_intent_texts(project_id, session_id, texts, language_code):
-    from google.cloud import dialogflow
-
-    session_client = dialogflow.SessionsClient()
-
-    session = session_client.session_path(project_id, session_id)
-    print("Session path: {}\n".format(session))
-    
-    text_input = dialogflow.TextInput(text=texts, language_code=language_code)
-
-    query_input = dialogflow.QueryInput(text=text_input)
-
-    response = session_client.detect_intent(
-        request={"session": session, "query_input": query_input}
-    )
-
-    return response
-    
-
 def main() -> None:
     logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
