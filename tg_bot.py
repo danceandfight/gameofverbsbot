@@ -57,32 +57,28 @@ def main() -> None:
     logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
     )
-    try:
-        load_dotenv()
-        tg_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
-        telegram_bot_logger_token = os.getenv('TELEGRAM_BOT_LOGGER_TOKEN')
-        telegram_chat_id = os.getenv('TELEGRAM_CHAT_ID')
-        bot_logger = Bot(token=telegram_bot_logger_token)
-        
-        logger.setLevel(logging.WARNING)
-        logger.addHandler(ErrorLogsHandler(bot_logger, telegram_chat_id))
 
-        updater = Updater(tg_bot_token)
+    load_dotenv()
+    tg_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
+    telegram_bot_logger_token = os.getenv('TELEGRAM_BOT_LOGGER_TOKEN')
+    telegram_chat_id = os.getenv('TELEGRAM_CHAT_ID')
+    bot_logger = Bot(token=telegram_bot_logger_token)
+    
+    logger.setLevel(logging.WARNING)
+    logger.addHandler(ErrorLogsHandler(bot_logger, telegram_chat_id))
 
-        dispatcher = updater.dispatcher
+    updater = Updater(tg_bot_token)
 
-        dispatcher.add_handler(CommandHandler("start", start))
-        dispatcher.add_handler(CommandHandler("help", help_command))
+    dispatcher = updater.dispatcher
 
-        dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, get_dialogflow_response))
-        updater.start_polling()
+    dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(CommandHandler("help", help_command))
 
-        updater.idle()
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, get_dialogflow_response))
+    updater.start_polling()
 
-    except ConnectionError as err:
-        logger.error('Бот упал с ошибкой:')
-        logger.error(err)
-        sleep(30)
+    updater.idle()
+
 
 
 if __name__ == '__main__':

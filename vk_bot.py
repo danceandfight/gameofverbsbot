@@ -32,26 +32,21 @@ if __name__ == '__main__':
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
     )
 
-    try:
-        load_dotenv()
+    load_dotenv()
 
-        telegram_bot_logger_token = os.getenv('TELEGRAM_BOT_LOGGER_TOKEN')
-        telegram_chat_id = os.getenv('TELEGRAM_CHAT_ID')
-        bot_logger = Bot(token=telegram_bot_logger_token)
-       
-        logger.setLevel(logging.WARNING)
-        logger.addHandler(ErrorLogsHandler(bot_logger, telegram_chat_id))
+    telegram_bot_logger_token = os.getenv('TELEGRAM_BOT_LOGGER_TOKEN')
+    telegram_chat_id = os.getenv('TELEGRAM_CHAT_ID')
+    bot_logger = Bot(token=telegram_bot_logger_token)
+   
+    logger.setLevel(logging.WARNING)
+    logger.addHandler(ErrorLogsHandler(bot_logger, telegram_chat_id))
 
-        vk_session = vk.VkApi(token=os.getenv('VK_TOKEN'))
-        vk_api = vk_session.get_api()
-        longpoll = VkLongPoll(vk_session)
+    vk_session = vk.VkApi(token=os.getenv('VK_TOKEN'))
+    vk_api = vk_session.get_api()
+    longpoll = VkLongPoll(vk_session)
 
-        for event in longpoll.listen():
-            if event.type == VkEventType.MESSAGE_NEW and event.to_me:
-                get_dialogflow_response(event, vk_api)
+    for event in longpoll.listen():
+        if event.type == VkEventType.MESSAGE_NEW and event.to_me:
+            get_dialogflow_response(event, vk_api)
 
-    except ConnectionError as err:
-        logger.error('Бот упал с ошибкой:')
-        logger.error(err)
-        sleep(30)
 
